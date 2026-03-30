@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweeten Admin | Abdulrahman Saeed Elbass</title>
+    <title>Sweeten Admin | نيرو عبده</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -11,33 +11,88 @@
             --success: #22c55e; --danger: #ef4444; --text: #f8fafc; 
             --stamp-gold: #c5a044; --stamp-brown: #5d3a24; 
         }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; padding-bottom: 80px; }
-        .container { max-width: 800px; margin: auto; display: none; }
+        body { 
+            background: var(--bg); color: var(--text); 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0; padding: 20px; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container { max-width: 800px; margin: auto; display: none; width: 100%; flex: 1; }
         
-        /* تصميم الختم */
-        .dev-stamp { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 1px solid #334155; text-decoration: none; }
-        .stamp-circle { width: 55px; height: 55px; background: #fff9f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .stamp-circle::before { content: ''; position: absolute; top: 8px; left: 5px; width: 7px; height: 7px; background: var(--stamp-gold); border-radius: 50%; box-shadow: 0 0 10px var(--stamp-gold); }
-        .stamp-initials { font-family: 'Great Vibes', cursive; font-size: 30px; color: var(--stamp-brown); margin-top: -5px; }
-        .dev-full-name { font-family: 'Dancing Script', cursive; font-size: 22px; color: #f8fafc; background: linear-gradient(45deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
         /* التنسيقات العامة */
         .form-section { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
         button { cursor: pointer; border: none; border-radius: 8px; font-weight: bold; padding: 12px; transition: 0.3s; }
         .btn-main { background: var(--success); color: white; width: 100%; font-size: 16px; margin-top: 10px; }
-        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
         
         .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; gap: 15px; border: 1px solid #334155; align-items: center; }
         .card img { width: 75px; height: 75px; border-radius: 8px; object-fit: cover; background: #000; }
         .card-info { flex: 1; }
         .card-actions { display: flex; gap: 10px; margin-top: 8px; }
-        .btn-edit { background: #f59e0b; color: white; flex: 1; }
-        .btn-del { background: var(--danger); color: white; flex: 1; }
+        .btn-edit { background: #f59e0b; color: white; flex: 1; font-size: 13px; }
+        .btn-del { background: var(--danger); color: white; flex: 1; font-size: 13px; }
         
         #loginOverlay { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .login-box { background: var(--card); padding: 35px; border-radius: 15px; text-align: center; border: 1px solid #334155; width: 300px; }
         #status { text-align: center; color: var(--primary); display: none; padding: 10px; font-weight: bold; }
+
+        /* --- تصميم الختم في أسفل الصفحة (Footer) --- */
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dev-stamp { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+            opacity: 0.9;
+            transition: 0.3s;
+        }
+        .dev-stamp:hover { opacity: 1; transform: scale(1.02); }
+
+        .stamp-circle { 
+            width: 45px; height: 45px; 
+            background: #fff9f5; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            border: 1px solid #ddd; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+        }
+        .stamp-circle::before { 
+            content: ''; position: absolute; 
+            top: 6px; left: 4px; 
+            width: 6px; height: 6px; 
+            background: var(--stamp-gold); 
+            border-radius: 50%; 
+            box-shadow: 0 0 8px var(--stamp-gold); 
+        }
+        .stamp-initials { 
+            font-family: 'Great Vibes', cursive; 
+            font-size: 24px; 
+            color: var(--stamp-brown); 
+            margin-top: -3px; 
+        }
+        .dev-name-box { display: flex; flex-direction: column; align-items: flex-start; }
+        .dev-by { font-size: 8px; letter-spacing: 2px; color: #94a3b8; font-weight: bold; }
+        .dev-full-name { 
+            font-family: 'Dancing Script', cursive; 
+            font-size: 18px; 
+            color: #f8fafc; 
+            background: linear-gradient(45deg, #fff, var(--primary)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
     </style>
 </head>
 <body>
@@ -51,16 +106,9 @@
 </div>
 
 <div class="container" id="adminApp">
-    <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="dev-stamp">
-        <div class="stamp-circle"><span class="stamp-initials">a.</span></div>
-        <div style="display:flex; flex-direction:column; align-items: flex-start;">
-            <span style="font-size:9px; letter-spacing:2px; color:#94a3b8; font-weight: bold;">DEV BY</span>
-            <span class="dev-full-name">Abdulrahman Saeed Elbass</span>
-        </div>
-    </a>
-
+    
     <div class="form-section">
-        <h2 id="formTitle">إضافة منتج جديد ✨</h2>
+        <h2 id="formTitle" style="margin-top:0">إضافة منتج جديد ✨</h2>
         <input type="hidden" id="editId">
         <div style="display:flex; gap:10px;">
             <input type="text" id="pName" placeholder="اسم المنتج">
@@ -68,9 +116,8 @@
         </div>
         <div style="display:flex; gap:10px;">
             <select id="pCategory"></select>
-            <input type="text" id="newCat" placeholder="أو أضف قسم جديد...">
+            <input type="text" id="newCat" placeholder="أو قسم جديد...">
         </div>
-        <label style="font-size: 11px; color: #94a3b8;">صورة المنتج (Cloudinary):</label>
         <input type="file" id="pImage" accept="image/*">
         <textarea id="pDesc" rows="2" placeholder="وصف المنتج التفصيلي"></textarea>
         <button class="btn-main" id="saveBtn" onclick="handleSave()">حفظ ونشر البيانات</button>
@@ -79,10 +126,19 @@
 
     <div id="status">جاري تحديث البيانات...</div>
     <div id="productList"></div>
+
+    <footer>
+        <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="dev-stamp">
+            <div class="stamp-circle"><span class="stamp-initials">a.</span></div>
+            <div class="dev-name-box">
+                <span class="dev-by">DEV BY</span>
+                <span class="dev-full-name">Abdulrahman Saeed Elbass</span>
+            </div>
+        </a>
+    </footer>
 </div>
 
 <script>
-    // 🔗 الرابط الخاص بك
     const API = "https://script.google.com/macros/s/AKfycbzh560dH73AznHozzIqzZtOaDGw0WOZMGEqsqipZMXuClGXFyqlKNOiSFCBkXaQoRXw/exec";
     const PASS = "2026";
     let lastImageUrl = "";
