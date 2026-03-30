@@ -1,7 +1,7 @@
 {
   "name": "Sweeten Admin Pro",
   "short_name": "حلي حياتك",
-  "description": "نظام إدارة محتوى متجر حلي حياتك - تصميم عبد الرحمن الباص",
+  "description": "لوحة إدارة متجر حلي حياتك - تطوير عبد الرحمن الباص",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -11,13 +11,13 @@
     {
       "src": "https://1toolz.sirv.com/sweeten/New%20folder/5.jpg",
       "sizes": "512x512",
-      "type": "image/jpg",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
       "src": "https://1toolz.sirv.com/sweeten/New%20folder/5.jpg",
       "sizes": "192x192",
-      "type": "image/jpg"
+      "type": "image/jpeg"
     }
   ]
 }
