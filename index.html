@@ -3,17 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweeten Admin | Abdulrahman Saeed Elbass</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <title>لوحة التحكم | حلي حياتك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; 
-            --success: #22c55e; --danger: #ef4444; --text: #f8fafc; 
-            --stamp-gold: #c5a044; --stamp-brown: #5d3a24; 
+            /* لوحة الألوان الجديدة مستوحاة من صور الهوية البصرية */
+            --bg-page: #fff9f5; /* لون الخلفية الكريمي الفاتح */
+            --card-bg: #ffffff; /* لون الكروت الأبيض النقي */
+            --text-main: #5d3a24; /* البني الداكن للنصوص الأساسية */
+            --text-sub: #8c7365; /* البني الفاتح للنصوص الثانوية */
+            --primary-gold: #c5a044; /* الذهبي للأزرار والعناصر النشطة */
+            --border-color: #e9e1dc; /* لون الحدود الناعم */
+            --danger-red: #ef4444; 
+            --success-green: #22c55e;
+            --input-bg: #fdf2f8; /* خلفية الحقول بلون فاتح جداً */
+            
+            /* ألوان الختم الخاص بك */
+            --stamp-gold: #c5a044;
+            --stamp-brown: #5d3a24;
+            --stamp-bg: #fff9f5;
         }
+
         body { 
-            background: var(--bg); color: var(--text); 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background: var(--bg-page); color: var(--text-main); 
+            font-family: 'Amiri', serif; /* خط عربي أصيل يتناسب مع الهوية */
             margin: 0; padding: 20px; 
             min-height: 100vh;
             display: flex;
@@ -21,37 +34,88 @@
         }
         .container { max-width: 800px; margin: auto; display: none; width: 100%; flex: 1; }
         
-        /* التنسيقات العامة */
-        .form-section { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #334155; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
-        button { cursor: pointer; border: none; border-radius: 8px; font-weight: bold; padding: 12px; transition: 0.3s; }
-        .btn-main { background: var(--success); color: white; width: 100%; font-size: 16px; margin-top: 10px; }
+        /* التنسيقات العامة للنموذج (Form) */
+        .form-section { 
+            background: var(--card-bg); padding: 30px; border-radius: 20px; 
+            border: 1px solid var(--border-color); margin-bottom: 30px; 
+            box-shadow: 0 15px 35px rgba(93, 58, 36, 0.05); 
+        }
+        h2 { color: var(--text-main); font-weight: 700; margin-top: 0; }
         
-        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 12px; display: flex; gap: 15px; border: 1px solid #334155; align-items: center; }
-        .card img { width: 75px; height: 75px; border-radius: 8px; object-fit: cover; background: #000; }
-        .card-info { flex: 1; }
-        .card-actions { display: flex; gap: 10px; margin-top: 8px; }
-        .btn-edit { background: #f59e0b; color: white; flex: 1; font-size: 13px; }
-        .btn-del { background: var(--danger); color: white; flex: 1; font-size: 13px; }
-        
-        #loginOverlay { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-box { background: var(--card); padding: 35px; border-radius: 15px; text-align: center; border: 1px solid #334155; width: 300px; }
-        #status { text-align: center; color: var(--primary); display: none; padding: 10px; font-weight: bold; }
+        input, select, textarea { 
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; 
+            border: 1px solid var(--border-color); background: var(--input-bg); 
+            color: var(--text-main); box-sizing: border-box; 
+            font-family: 'Amiri', serif; font-size: 16px;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 10px rgba(197, 160, 68, 0.1);
+        }
 
-        /* --- تصميم الختم في أسفل الصفحة (Footer) --- */
+        button { 
+            cursor: pointer; border: none; border-radius: 10px; 
+            font-weight: bold; padding: 14px; transition: 0.3s; 
+            font-family: 'Amiri', serif; font-size: 16px;
+        }
+        
+        /* زر الحفظ الذهبي اللامع */
+        .btn-main { 
+            background: var(--primary-gold); color: white; width: 100%; 
+            font-size: 18px; margin-top: 15px; 
+            box-shadow: 0 5px 15px rgba(197, 160, 68, 0.2);
+        }
+        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-main:disabled { background: #dcd3cc; cursor: not-allowed; box-shadow: none; }
+        
+        /* تنسيق كروت المنتجات */
+        .card { 
+            background: var(--card-bg); border-radius: 15px; padding: 20px; 
+            margin-bottom: 15px; display: flex; gap: 20px; 
+            border: 1px solid var(--border-color); align-items: center; 
+            box-shadow: 0 8px 20px rgba(93, 58, 36, 0.03);
+            transition: 0.3s;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(93, 58, 36, 0.06); }
+        .card img { width: 85px; height: 85px; border-radius: 12px; object-fit: cover; background: #faf5f2; border: 1px solid var(--border-color); }
+        .card-info { flex: 1; }
+        .card-info h4 { margin: 0; font-size: 18px; color: var(--text-main); }
+        .card-info p { margin: 8px 0; color: var(--primary-gold); font-weight: bold; font-size: 18px; }
+        .card-info small { color: var(--text-sub); }
+
+        .card-actions { display: flex; gap: 12px; margin-top: 12px; }
+        .btn-edit { background: #fdf2f8; color: var(--primary-gold); flex: 1; border: 1px solid #f9dbe9; font-size: 14px; }
+        .btn-edit:hover { background: #f9dbe9; }
+        .btn-del { background: #fff1f0; color: var(--danger-red); flex: 1; border: 1px solid #ffccc7; font-size: 14px; }
+        .btn-del:hover { background: #ffccc7; }
+        
+        /* شاشة تسجيل الدخول بتصميم الهوية */
+        #loginOverlay { position: fixed; inset: 0; background: var(--bg-page); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-box { 
+            background: var(--card-bg); padding: 45px; border-radius: 20px; 
+            text-align: center; border: 1px solid var(--border-color); width: 320px; 
+            box-shadow: 0 25px 60px rgba(93, 58, 36, 0.1); 
+        }
+        
+        #status { text-align: center; color: var(--primary-gold); display: none; padding: 15px; font-weight: bold; }
+
+        /* --- تصميم ختم المبرمج في أسفل الصفحة (Footer) --- */
         footer {
-            margin-top: 50px;
-            padding: 20px 0;
-            border-top: 1px solid #334155;
+            margin-top: auto; /* يدفع الـ footer للأسفل */
+            padding: 30px 0;
+            border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: center;
             align-items: center;
+            background: #faf5f2; /* تظليل خفيف لخلفية الـ footer */
+            width: 100%;
         }
 
         .dev-stamp { 
             display: flex; 
             align-items: center; 
-            gap: 12px; 
+            gap: 15px; 
             text-decoration: none; 
             opacity: 0.9;
             transition: 0.3s;
@@ -59,39 +123,37 @@
         .dev-stamp:hover { opacity: 1; transform: scale(1.02); }
 
         .stamp-circle { 
-            width: 45px; height: 45px; 
-            background: #fff9f5; 
+            width: 50px; height: 50px; 
+            background: var(--stamp-bg); 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             position: relative; 
-            border: 1px solid #ddd; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            border: 1px solid var(--border-color); 
+            box-shadow: 0 6px 15px rgba(93, 58, 36, 0.1); 
         }
         .stamp-circle::before { 
             content: ''; position: absolute; 
-            top: 6px; left: 4px; 
-            width: 6px; height: 6px; 
+            top: 8px; left: 5px; 
+            width: 7px; height: 7px; 
             background: var(--stamp-gold); 
             border-radius: 50%; 
-            box-shadow: 0 0 8px var(--stamp-gold); 
+            box-shadow: 0 0 10px var(--stamp-gold); 
         }
         .stamp-initials { 
             font-family: 'Great Vibes', cursive; 
-            font-size: 24px; 
+            font-size: 28px; 
             color: var(--stamp-brown); 
             margin-top: -3px; 
         }
         .dev-name-box { display: flex; flex-direction: column; align-items: flex-start; }
-        .dev-by { font-size: 8px; letter-spacing: 2px; color: #94a3b8; font-weight: bold; }
+        .dev-by { font-size: 10px; letter-spacing: 2px; color: var(--text-sub); font-weight: bold; text-transform: uppercase; }
         .dev-full-name { 
             font-family: 'Dancing Script', cursive; 
-            font-size: 18px; 
-            color: #f8fafc; 
-            background: linear-gradient(45deg, #fff, var(--primary)); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
+            font-size: 20px; 
+            color: var(--text-main); 
+            font-weight: bold;
         }
     </style>
 </head>
@@ -99,8 +161,9 @@
 
 <div id="loginOverlay">
     <div class="login-box">
-        <h2 style="color:var(--primary)">لوحة إدارة المتجر</h2>
-        <input type="password" id="passInput" placeholder="كود الدخول السري">
+        <h2 style="color:var(--text-main)">لوحة الإدارة الفاخرة</h2>
+        <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 25px;">أدخل الكود السري للوصول</p>
+        <input type="password" id="passInput" placeholder="الكود السري">
         <button class="btn-main" onclick="checkLogin()">دخول اللوحة</button>
     </div>
 </div>
@@ -108,37 +171,39 @@
 <div class="container" id="adminApp">
     
     <div class="form-section">
-        <h2 id="formTitle" style="margin-top:0">إضافة منتج جديد ✨</h2>
+        <h2 id="formTitle">إضافة منتج جديد ✨</h2>
         <input type="hidden" id="editId">
-        <div style="display:flex; gap:10px;">
+        <div style="display:flex; gap:15px;">
             <input type="text" id="pName" placeholder="اسم المنتج">
-            <input type="number" id="pPrice" placeholder="السعر">
+            <input type="number" id="pPrice" placeholder="السعر (ج.م)">
         </div>
-        <div style="display:flex; gap:10px;">
-            <select id="pCategory"></select>
-            <input type="text" id="newCat" placeholder="أو قسم جديد...">
+        <div style="display:flex; gap:15px; align-items: center;">
+            <select id="pCategory" style="flex: 1;"></select>
+            <input type="text" id="newCat" placeholder="أو قسم جديد..." style="flex: 1.5;">
         </div>
         <input type="file" id="pImage" accept="image/*">
         <textarea id="pDesc" rows="2" placeholder="وصف المنتج التفصيلي"></textarea>
         <button class="btn-main" id="saveBtn" onclick="handleSave()">حفظ ونشر البيانات</button>
-        <button id="cancelBtn" onclick="resetForm()" style="display:none; background:#475569; color:white; width:100%; margin-top:5px;">إلغاء التعديل</button>
+        <button id="cancelBtn" onclick="resetForm()" style="display:none; background:#475569; color:white; width:100%; margin-top:10px;">إلغاء التعديل</button>
     </div>
 
     <div id="status">جاري تحديث البيانات...</div>
     <div id="productList"></div>
 
-    <footer>
-        <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="dev-stamp">
-            <div class="stamp-circle"><span class="stamp-initials">a.</span></div>
-            <div class="dev-name-box">
-                <span class="dev-by">DEV BY</span>
-                <span class="dev-full-name">Abdulrahman Saeed Elbass</span>
-            </div>
-        </a>
-    </footer>
 </div>
 
+<footer>
+    <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="dev-stamp">
+        <div class="stamp-circle"><span class="stamp-initials">a.</span></div>
+        <div class="dev-name-box">
+            <span class="dev-by">Developed by</span>
+            <span class="dev-full-name">Abdulrahman Saeed Elbass</span>
+        </div>
+    </a>
+</footer>
+
 <script>
+    // 🔗 الرابط الخاص بك (لا يزال يعمل)
     const API = "https://script.google.com/macros/s/AKfycbzh560dH73AznHozzIqzZtOaDGw0WOZMGEqsqipZMXuClGXFyqlKNOiSFCBkXaQoRXw/exec";
     const PASS = "2026";
     let lastImageUrl = "";
@@ -155,35 +220,45 @@
         const fd = new FormData();
         fd.append("file", file);
         fd.append("upload_preset", "products_upload");
-        const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {method:"POST", body:fd});
-        const d = await res.json();
-        return d.secure_url;
+        try {
+            const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {method:"POST", body:fd});
+            const d = await res.json();
+            return d.secure_url;
+        } catch (e) {
+            alert("خطأ في رفع الصورة!");
+            return "";
+        }
     }
 
     async function fetchData() {
         document.getElementById("status").style.display = "block";
-        const r = await fetch(API);
-        const data = await r.json();
-        
-        const sel = document.getElementById("pCategory");
-        sel.innerHTML = '<option value="">اختر قسم...</option>';
-        data.categories.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+        try {
+            const r = await fetch(API);
+            const data = await r.json();
+            
+            // تحديث الأقسام
+            const catSel = document.getElementById("pCategory");
+            catSel.innerHTML = '<option value="">اختر قسم موجود...</option>';
+            data.categories.forEach(c => catSel.innerHTML += `<option value="${c}">${c}</option>`);
 
-        const area = document.getElementById("productList");
-        area.innerHTML = data.products.reverse().map(p => `
-            <div class="card">
-                <img src="${p.image || ''}" onerror="this.src='https://via.placeholder.com/75'">
-                <div class="card-info">
-                    <h4 style="margin:0">${p.name} <small style="color:var(--primary)">(${p.category})</small></h4>
-                    <p style="margin:5px 0;">السعر: ${p.price} ج.م</p>
-                    <div class="card-actions">
-                        <button class="btn-edit" onclick='initEdit(${JSON.stringify(p)})'>تعديل</button>
-                        <button class="btn-del" onclick="handleDelete(${p.id})">حذف</button>
+            // عرض المنتجات (الأحدث أولاً)
+            const listArea = document.getElementById("productList");
+            listArea.innerHTML = data.products.reverse().map(p => `
+                <div class="card">
+                    <img src="${p.image || 'https://via.placeholder.com/85'}" onerror="this.src='https://via.placeholder.com/85'">
+                    <div class="card-info">
+                        <h4>${p.name} <small>(${p.category})</small></h4>
+                        <p>${p.price} ج.م</p>
+                        <div class="card-actions">
+                            <button class="btn-edit" onclick='initEdit(${JSON.stringify(p)})'>تعديل</button>
+                            <button class="btn-del" onclick="handleDelete(${p.id})">حذف</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
-        document.getElementById("status").style.display = "none";
+            `).join('');
+        } catch (e) {
+            console.error(e);
+        } finally { document.getElementById("status").style.display = "none"; }
     }
 
     async function handleSave() {
@@ -192,7 +267,7 @@
         const file = document.getElementById("pImage").files[0];
         const category = document.getElementById("newCat").value || document.getElementById("pCategory").value;
 
-        if (!document.getElementById("pName").value || !category) return alert("اكمل البيانات الأساسية!");
+        if (!document.getElementById("pName").value || !category) return alert("الاسم والقسم مطلوبان!");
 
         btn.disabled = true; btn.innerText = "جاري الحفظ...";
 
@@ -211,7 +286,7 @@
             };
 
             await fetch(API, {method:"POST", mode:"no-cors", body:JSON.stringify(payload)});
-            alert("تم الحفظ بنجاح!");
+            alert("تم حفظ البيانات بنجاح!");
             resetForm(); fetchData();
         } catch(e) {
             alert("حدث خطأ في الاتصال");
