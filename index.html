@@ -37,6 +37,22 @@
         }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
+        /* --- مؤشر رفع الصورة والبيانات (Uploading Overlay) --- */
+        #uploadingOverlay {
+            position: fixed; inset: 0; background: rgba(255, 249, 245, 0.85); /* خلفية الصفحة شبه شفافة */
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9998; /* تحت الـ Splash وفوق كل شيء آخر */
+        }
+        .upload-spinner {
+            width: 50px; height: 50px;
+            border: 5px solid rgba(197, 160, 68, 0.2);
+            border-top: 5px solid var(--primary-gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         body { 
             background: var(--bg-page); color: var(--text-main); 
             font-family: 'Amiri', serif; margin: 0; padding: 20px; 
@@ -81,6 +97,12 @@
     <p style="color: #8c7365; font-weight: bold; letter-spacing: 1px;">SWEETEN YOUR LIFE</p>
 </div>
 
+<div id="uploadingOverlay">
+    <div class="upload-spinner"></div>
+    <p style="color: var(--primary-gold); font-weight: bold; font-size: 18px;">جاري رفع البيانات والترويقة...</p>
+    <p style="color: #8c7365; font-size: 14px;">يرجى عدم إغلاق الصفحة</p>
+</div>
+
 <div id="loginOverlay">
     <div class="login-box">
         <h2 style="margin-bottom:10px; color:var(--text-main);">دخول المشرف</h2>
@@ -112,7 +134,7 @@
         <button id="cancelBtn" onclick="resetForm()" style="display:none; background:#475569; color:white; width:100%; margin-top:5px; border-radius:10px; border:none; padding:10px; cursor:pointer;">إلغاء التعديل</button>
     </div>
 
-    <div id="status">جاري معالجة البيانات...</div>
+    <div id="status">جاري تحديث القائمة...</div>
     <div id="list"></div>
     
     <footer>
@@ -188,13 +210,16 @@
 
     async function save() {
         const btn = document.getElementById("saveBtn");
+        const uploadLoader = document.getElementById("uploadingOverlay"); // مؤشر الرفع
         const id = document.getElementById("editId").value;
         const file = document.getElementById("pImage").files[0];
         const cat = document.getElementById("newCat").value || document.getElementById("pCategory").value;
 
         if (!document.getElementById("pName").value || !cat) return alert("يرجى إدخال الاسم والقسم!");
 
-        btn.disabled = true; btn.innerText = "جاري الحفظ...";
+        btn.disabled = true; 
+        btn.innerText = "جاري الاتصال...";
+        uploadLoader.style.display = "flex"; // إظهار مؤشر الرفع بملء الشاشة
 
         try {
             let imgUrl = lastImg;
@@ -213,8 +238,14 @@
             await fetch(API, {method:"POST", mode:"no-cors", body:JSON.stringify(payload)});
             alert("تمت العملية بنجاح!");
             resetForm(); fetchData();
-        } catch(e) { alert("حدث خطأ في الاتصال"); }
-        finally { btn.disabled = false; btn.innerText = "حفظ ونشر البيانات"; }
+        } catch(e) { 
+            alert("حدث خطأ في الاتصال، تأكد من الشبكة"); 
+        }
+        finally { 
+            btn.disabled = false; 
+            btn.innerText = "حفظ ونشر البيانات"; 
+            uploadLoader.style.display = "none"; // إخفاء مؤشر الرفع
+        }
     }
 
     function initEdit(p) {
@@ -232,8 +263,16 @@
 
     async function handleDelete(id) {
         if (!confirm("هل أنت متأكد من الحذف؟")) return;
-        await fetch(`${API}?action=delete&id=${id}`);
-        fetchData();
+        const uploadLoader = document.getElementById("uploadingOverlay");
+        uploadLoader.style.display = "flex"; // إظهار المؤشر عند الحذف أيضاً
+        try {
+            await fetch(`${API}?action=delete&id=${id}`);
+            fetchData();
+        } catch(e) {
+            alert("خطأ في الحذف");
+        } finally {
+            uploadLoader.style.display = "none";
+        }
     }
 
     function resetForm() {
