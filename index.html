@@ -5,8 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sweeten Admin | لوحة التحكم</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --success: #22c55e; --danger: #ef4444; --text: #f8fafc; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; }
+        :root { 
+            --bg: #0f172a; 
+            --card: #1e293b; 
+            --primary: #38bdf8; 
+            --success: #22c55e; 
+            --danger: #ef4444; 
+            --text: #f8fafc; 
+            --sub-text: #94a3b8;
+            --stamp-pink: #fdf2f8; /* لون خلفية الختم */
+            --stamp-brown: #7c2d12; /* لون نص الختم */
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; position: relative; min-height: 100vh; padding-bottom: 70px; /* للـ footer */ }
         .container { max-width: 800px; margin: auto; display: none; }
         
         /* شاشة الدخول */
@@ -28,6 +38,77 @@
         .btn-del { background: var(--danger); color: white; flex: 1; }
         
         #status { text-align: center; color: var(--primary); padding: 15px; display: none; font-weight: bold; }
+
+        /* ختم المبرمج في الأعلى */
+        .header-stamp-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-stamp {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(30, 41, 59, 0.5); /* semi-transparent card bg */
+            padding: 5px 15px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            text-decoration: none;
+            color: var(--text);
+            transition: 0.3s;
+        }
+        .header-stamp:hover {
+            border-color: var(--primary);
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .stamp-icon-outer {
+            width: 35px;
+            height: 35px;
+            background-color: var(--stamp-pink);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(124, 45, 18, 0.2);
+            position: relative;
+        }
+
+        .stamp-icon-inner {
+            font-size: 20px;
+            color: var(--stamp-brown);
+            font-style: italic;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        /* ختم المبرمج في الـ footer */
+        .footer-stamp {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: rgba(15, 23, 42, 0.9); /* same as body bg, transparent */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid #334155;
+            font-size: 14px;
+            color: var(--sub-text);
+        }
+        
+        .footer-stamp .stamp-icon-outer {
+            width: 30px;
+            height: 30px;
+        }
+        .footer-stamp .stamp-icon-inner {
+            font-size: 16px;
+        }
+
     </style>
 </head>
 <body>
@@ -42,6 +123,20 @@
 </div>
 
 <div class="container" id="app">
+    
+    <div class="header-stamp-container">
+        <h1 style="color: var(--text); font-size: 24px; margin: 0;">التحكم</h1>
+        <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="header-stamp">
+            <div class="stamp-icon-outer">
+                <span class="stamp-icon-inner">a.</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                <span style="font-size: 10px; color: var(--sub-text); text-transform: uppercase;">DEV BY</span>
+                <span style="font-size: 14px; color: var(--text); font-weight: bold;">ELBASS</span>
+            </div>
+        </a>
+    </div>
+
     <div class="form-section">
         <h2 id="formTitle">إضافة منتج جديد ✨</h2>
         <input type="hidden" id="editId">
@@ -56,7 +151,7 @@
             <input type="text" id="newCategory" placeholder="أو اكتب قسم جديد..." style="flex: 1.5;">
         </div>
         
-        <label style="font-size: 12px; color: #94a3b8;">صورة المنتج (Cloudinary):</label>
+        <label style="font-size: 12px; color: var(--sub-text);">صورة المنتج (Cloudinary):</label>
         <input type="file" id="pImage" accept="image/*">
         
         <textarea id="pDesc" rows="2" placeholder="وصف المنتج التفصيلي"></textarea>
@@ -67,6 +162,14 @@
 
     <div id="status">جاري تحديث البيانات...</div>
     <div id="productList"></div>
+    
+    <div class="footer-stamp">
+        <span style="text-transform: uppercase;">Developed by</span>
+        <div class="stamp-icon-outer">
+            <span class="stamp-icon-inner">a.</span>
+        </div>
+        <span style="font-weight: bold;">ELBASS</span>
+    </div>
 </div>
 
 <script>
