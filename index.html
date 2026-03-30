@@ -4,13 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Sweeten Your Life</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#eab308">
+    <meta name="mobile-web-app-capable" content="yes">
+
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --bg-page: #fff9f5; --text-dark: #452e1f; 
-            --brand-yellow: #eab308; --brand-yellow-hover: #d9a306;
+            --bg-page: #fff9f5; 
+            --text-dark: #452e1f; 
+            --brand-yellow: #eab308; 
+            --brand-yellow-hover: #d9a306;
             --border-soft: #e9e1dc;
+            --card-shadow: 0 10px 25px rgba(93, 58, 36, 0.05);
         }
 
         /* --- شاشة الترحيب --- */
@@ -22,7 +30,7 @@
         .gray-logo { width: 140px; filter: grayscale(100%); opacity: 0.5; animation: pulse 1.5s infinite; border-radius: 50%; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-        /* --- مؤشر الرفع --- */
+        /* --- مؤشر الرفع بملء الشاشة --- */
         #uploadingOverlay {
             position: fixed; inset: 0; background: rgba(255, 249, 245, 0.9);
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -32,45 +40,51 @@
         body { 
             background: var(--bg-page); color: var(--text-dark); 
             font-family: 'Amiri', serif; margin: 0; padding: 20px; 
-            min-height: 100vh;
+            min-height: 100vh; display: flex; flex-direction: column; 
         }
         
-        .container { max-width: 800px; margin: auto; display: none; }
+        .container { max-width: 800px; margin: auto; display: none; width: 100%; flex: 1; }
 
-        /* --- كروت الإحصائيات الجديدة --- */
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid var(--border-soft); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .stat-card span { display: block; font-size: 22px; font-weight: bold; color: var(--brand-yellow); }
-        .stat-card label { font-size: 12px; color: #8c7365; }
+        /* --- كروت الإحصائيات --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 15px; border-radius: 20px; text-align: center; border: 1px solid var(--border-soft); box-shadow: var(--card-shadow); }
+        .stat-card span { display: block; font-size: 24px; font-weight: bold; color: var(--brand-yellow); }
+        .stat-card label { font-size: 12px; color: #8c7365; font-weight: bold; }
 
-        /* --- شريط البحث --- */
-        .search-box { margin-bottom: 20px; position: relative; }
-        .search-box input { padding-right: 40px; border-radius: 50px; background: white; }
-
-        /* --- الأزرار Capsule --- */
+        /* --- تصميم الأزرار (Capsule) --- */
         .btn-brand { 
             background: var(--brand-yellow); color: var(--text-dark); border: none; 
-            padding: 16px 30px; border-radius: 50px; font-weight: bold; font-size: 18px; 
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 15px;
+            padding: 16px 35px; border-radius: 50px; font-weight: bold; font-size: 19px; 
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 15px; font-family: 'Amiri', serif;
         }
-        .btn-brand:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(234, 179, 8, 0.3); }
+        .btn-brand:hover { background: var(--brand-yellow-hover); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(234, 179, 8, 0.3); }
 
-        .form-section { background: white; padding: 25px; border-radius: 25px; border: 1px solid var(--border-soft); margin-bottom: 30px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid var(--border-soft); background: #fdfaf8; box-sizing: border-box; font-family: 'Amiri', serif; }
+        /* --- الفورم --- */
+        .form-section { background: white; padding: 30px; border-radius: 25px; border: 1px solid var(--border-soft); margin-bottom: 30px; box-shadow: var(--card-shadow); }
+        input, select, textarea { width: 100%; padding: 14px; margin: 10px 0; border-radius: 15px; border: 1px solid var(--border-soft); background: #fdfaf8; box-sizing: border-box; font-family: 'Amiri', serif; font-size: 16px; }
 
-        .card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; border: 1px solid var(--border-soft); align-items: center; transition: 0.3s; animation: slideIn 0.5s ease forwards; opacity: 0; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .card img { width: 70px; height: 70px; border-radius: 15px; object-fit: cover; }
-        .badge { background: #fdf2f8; color: var(--brand-yellow-hover); padding: 2px 10px; border-radius: 50px; font-size: 11px; font-weight: bold; border: 1px solid #f9dbe9; }
+        /* --- البحث --- */
+        .search-box input { border-radius: 50px; background: white; padding-right: 20px; margin-bottom: 20px; border-color: var(--brand-yellow); }
 
-        footer { margin-top: 50px; padding: 20px 0; border-top: 1px solid var(--border-soft); display: flex; justify-content: center; }
-        .stamp-circle { width: 45px; height: 45px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #ddd; }
-        .stamp-circle::before { content: ''; position: absolute; top: 7px; left: 5px; width: 6px; height: 6px; background: var(--brand-yellow); border-radius: 50%; box-shadow: 0 0 8px var(--brand-yellow); }
-        .stamp-initials { font-family: 'Great Vibes', cursive; font-size: 24px; color: #5d3a24; }
+        /* --- كروت المنتجات --- */
+        .card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 12px; display: flex; gap: 15px; border: 1px solid var(--border-soft); align-items: center; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .card img { width: 75px; height: 75px; border-radius: 15px; object-fit: cover; }
+        .badge { background: #fdf2f8; color: var(--brand-yellow-hover); padding: 2px 12px; border-radius: 50px; font-size: 11px; font-weight: bold; border: 1px solid #f9dbe9; margin-right: 5px; }
 
+        /* --- شاشة الدخول --- */
         #loginOverlay { position: fixed; inset: 0; background: var(--bg-page); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-box { background: white; padding: 40px; border-radius: 30px; text-align: center; border: 1px solid var(--border-soft); width: 320px; }
+        .login-box { background: white; padding: 45px; border-radius: 30px; text-align: center; border: 1px solid var(--border-soft); width: 330px; box-shadow: 0 20px 50px rgba(93, 58, 36, 0.08); }
+
+        /* --- الختم المحدث تحت خالص --- */
+        footer { margin-top: 60px; padding: 25px 0; border-top: 1px solid var(--border-soft); display: flex; justify-content: center; background: #faf6f3; width: 100%; }
+        .dev-stamp { display: flex; align-items: center; gap: 15px; text-decoration: none; color: var(--text-dark); transition: 0.3s; }
+        .stamp-circle { width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #ddd; }
+        .stamp-circle::before { content: ''; position: absolute; top: 7px; left: 5px; width: 7px; height: 7px; background: var(--brand-yellow); border-radius: 50%; box-shadow: 0 0 10px var(--brand-yellow); }
+        .stamp-initials { font-family: 'Great Vibes', cursive; font-size: 26px; color: #5d3a24; margin-top: -4px; }
+        .dev-full-name { font-family: 'Dancing Script', cursive; font-size: 20px; color: var(--text-dark); font-weight: bold; }
+
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-yellow); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -81,13 +95,14 @@
 </div>
 
 <div id="uploadingOverlay">
-    <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-yellow); border-radius: 50%; animation: spin 1s linear infinite;"></div>
-    <p style="margin-top:15px; font-weight:bold;">جاري معالجة طلبك...</p>
+    <div class="spinner"></div>
+    <p style="margin-top:15px; font-weight:bold;">جاري الحفظ والنشر...</p>
 </div>
 
 <div id="loginOverlay">
     <div class="login-box">
-        <h2>دخول الإدارة</h2>
+        <h2 style="margin-bottom:10px;">دخول المشرف</h2>
+        <p style="font-size:14px; color:#8c7365; margin-bottom:25px;">أدخل الكود السري للوحة التحكم</p>
         <input type="password" id="passInput" placeholder="الكود السري">
         <button class="btn-brand" onclick="login()">دخول اللوحة</button>
     </div>
@@ -97,31 +112,33 @@
     <div class="stats-grid">
         <div class="stat-card"><span id="stat-total">0</span><label>منتج</label></div>
         <div class="stat-card"><span id="stat-cats">0</span><label>قسم</label></div>
-        <div class="stat-card"><span id="stat-max">0</span><label>أغلى سعر</label></div>
+        <div class="stat-card"><span id="stat-max">0</span><label>أعلى سعر</label></div>
     </div>
 
     <div class="form-section">
-        <h2 id="formTitle" style="margin-top:0">إضافة منتج ✨</h2>
+        <h2 id="formTitle" style="margin-top:0">إضافة منتج جديد ✨</h2>
         <input type="hidden" id="editId">
-        <div style="display:flex; gap:10px;"><input type="text" id="pName" placeholder="الاسم"><input type="number" id="pPrice" placeholder="السعر"></div>
-        <div style="display:flex; gap:10px;"><select id="pCategory"></select><input type="text" id="newCat" placeholder="قسم جديد"></div>
-        <input type="file" id="pImage"><textarea id="pDesc" placeholder="الوصف"></textarea>
+        <div style="display:flex; gap:12px;"><input type="text" id="pName" placeholder="الاسم"><input type="number" id="pPrice" placeholder="السعر"></div>
+        <div style="display:flex; gap:12px;"><select id="pCategory"></select><input type="text" id="newCat" placeholder="أو قسم جديد"></div>
+        <input type="file" id="pImage" accept="image/*">
+        <textarea id="pDesc" rows="2" placeholder="وصف المنتج"></textarea>
         <button class="btn-brand" id="saveBtn" onclick="save()">حفظ ونشر البيانات</button>
-        <button id="cancelBtn" onclick="resetForm()" style="display:none; width:100%; background:#94a3b8; color:white; border:none; padding:10px; margin-top:10px; border-radius:50px; cursor:pointer;">إلغاء</button>
+        <button id="cancelBtn" onclick="resetForm()" style="display:none; width:100%; background:#94a3b8; color:white; border:none; padding:12px; margin-top:10px; border-radius:50px; cursor:pointer;">إلغاء التعديل</button>
     </div>
 
     <div class="search-box">
         <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="ابحث عن منتج بالاسم...">
     </div>
 
+    <div id="status" style="text-align:center; display:none; color:#8c7365;">جاري تحديث البيانات...</div>
     <div id="list"></div>
     
     <footer>
         <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="dev-stamp">
             <div class="stamp-circle"><span class="stamp-initials">a.</span></div>
             <div style="display:flex; flex-direction:column; align-items: flex-start;">
-                <span style="font-size:8px; color:#8c7365; font-weight:bold;">DEVELOPED BY</span>
-                <span style="font-family:'Dancing Script', cursive; font-size:18px;">Abdulrahman Saeed Elbass</span>
+                <span style="font-size:9px; color:#8c7365; font-weight:bold;">DEVELOPED BY</span>
+                <span class="dev-full-name">Abdulrahman Saeed Elbass</span>
             </div>
         </a>
     </footer>
@@ -131,21 +148,32 @@
     const API = "https://script.google.com/macros/s/AKfycbzh560dH73AznHozzIqzZtOaDGw0WOZMGEqsqipZMXuClGXFyqlKNOiSFCBkXaQoRXw/exec";
     const PASS = "2026";
     let allProducts = [];
+    let lastImg = "";
 
     window.onload = () => setTimeout(() => {
         document.getElementById('splash').style.opacity = '0';
         setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
-    }, 2000);
+    }, 2200);
 
     function login() {
         if (document.getElementById("passInput").value === PASS) {
             document.getElementById("loginOverlay").style.display = "none";
             document.getElementById("app").style.display = "block";
             fetchData();
-        } else alert("كود خطأ!");
+        } else alert("كود خاطئ!");
+    }
+
+    async function uploadCloudinary(file) {
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", "products_upload");
+        const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {method:"POST", body:fd});
+        const d = await res.json();
+        return d.secure_url;
     }
 
     async function fetchData() {
+        document.getElementById("status").style.display = "block";
         const r = await fetch(API);
         const data = await r.json();
         allProducts = data.products;
@@ -153,28 +181,28 @@
         // تحديث الإحصائيات
         document.getElementById("stat-total").innerText = allProducts.length;
         document.getElementById("stat-cats").innerText = data.categories.length;
-        const maxPrice = Math.max(...allProducts.map(p => p.price || 0));
-        document.getElementById("stat-max").innerText = maxPrice + " ج";
+        const prices = allProducts.map(p => parseFloat(p.price) || 0);
+        document.getElementById("stat-max").innerText = (prices.length ? Math.max(...prices) : 0) + " ج";
 
-        // تحديث الأقسام
         const sel = document.getElementById("pCategory");
         sel.innerHTML = '<option value="">اختر قسم...</option>';
         data.categories.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
 
         renderList(allProducts);
+        document.getElementById("status").style.display = "none";
     }
 
     function renderList(products) {
         const area = document.getElementById("list");
         area.innerHTML = products.slice().reverse().map(p => `
             <div class="card">
-                <img src="${p.image || 'https://via.placeholder.com/70'}">
+                <img src="${p.image || 'https://via.placeholder.com/75'}" onerror="this.src='https://via.placeholder.com/75'">
                 <div style="flex:1">
                     <h4 style="margin:0">${p.name} <span class="badge">${p.category}</span></h4>
                     <p style="margin:5px 0; font-weight:bold; color:var(--brand-yellow)">${p.price} ج.م</p>
-                    <div style="display:flex; gap:10px;">
-                        <button onclick='initEdit(${JSON.stringify(p)})' style="color:orange; background:none; border:none; cursor:pointer; font-family:'Amiri'">تعديل</button>
-                        <button onclick="handleDelete(${p.id})" style="color:red; background:none; border:none; cursor:pointer; font-family:'Amiri'">حذف</button>
+                    <div style="display:flex; gap:12px;">
+                        <button onclick='initEdit(${JSON.stringify(p)})' style="color:#e67e22; background:none; border:none; cursor:pointer; font-family:'Amiri'; font-size:16px;">تعديل</button>
+                        <button onclick="handleDelete(${p.id})" style="color:#e74c3c; background:none; border:none; cursor:pointer; font-family:'Amiri'; font-size:16px;">حذف</button>
                     </div>
                 </div>
             </div>
@@ -187,8 +215,63 @@
         renderList(filtered);
     }
 
-    // وظائف save و delete و initEdit كما هي في الكود السابق...
-    // (يجب دمجها مع الكود الجديد لضمان العمل)
+    async function save() {
+        const overlay = document.getElementById("uploadingOverlay");
+        const id = document.getElementById("editId").value;
+        const file = document.getElementById("pImage").files[0];
+        const cat = document.getElementById("newCat").value || document.getElementById("pCategory").value;
+
+        if (!document.getElementById("pName").value || !cat) return alert("اكمل البيانات");
+
+        overlay.style.display = "flex";
+        try {
+            let imgUrl = lastImg;
+            if (file) imgUrl = await uploadCloudinary(file);
+
+            const payload = {
+                action: id ? "edit" : "add",
+                id: id,
+                name: document.getElementById("pName").value,
+                price: document.getElementById("pPrice").value,
+                category: cat,
+                image: imgUrl,
+                description: document.getElementById("pDesc").value
+            };
+
+            await fetch(API, {method:"POST", mode:"no-cors", body:JSON.stringify(payload)});
+            alert("تم بنجاح!");
+            resetForm(); fetchData();
+        } catch(e) { alert("خطأ في الاتصال"); }
+        finally { overlay.style.display = "none"; }
+    }
+
+    function initEdit(p) {
+        document.getElementById("formTitle").innerText = "تعديل: " + p.name;
+        document.getElementById("editId").value = p.id;
+        document.getElementById("pName").value = p.name;
+        document.getElementById("pPrice").value = p.price;
+        document.getElementById("pCategory").value = p.category;
+        document.getElementById("pDesc").value = p.description;
+        lastImg = p.image;
+        document.getElementById("cancelBtn").style.display = "block";
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    async function handleDelete(id) {
+        if (!confirm("حذف نهائي؟")) return;
+        document.getElementById("uploadingOverlay").style.display = "flex";
+        await fetch(`${API}?action=delete&id=${id}`);
+        fetchData();
+        document.getElementById("uploadingOverlay").style.display = "none";
+    }
+
+    function resetForm() {
+        document.getElementById("formTitle").innerText = "إضافة منتج جديد ✨";
+        document.getElementById("editId").value = "";
+        document.getElementById("cancelBtn").style.display = "none";
+        ["pName", "pPrice", "newCat", "pDesc", "pImage"].forEach(i => document.getElementById(i).value = "");
+        lastImg = "";
+    }
 </script>
 </body>
 </html>
