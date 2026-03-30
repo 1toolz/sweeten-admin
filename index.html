@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم متجر الحلويات</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --primary: #38bdf8;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --text: #f8fafc;
+            --border: #334155;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { max-width: 900px; margin: auto; }
+
+        /* قسم الإضافة */
+        .form-section {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        h2 { color: var(--primary); margin-top: 0; }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #0f172a;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .btn-main {
+            background: var(--success);
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-main:disabled { background: #475569; cursor: not-allowed; }
+
+        /* قسم عرض المنتجات */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .card-body { padding: 15px; flex-grow: 1; }
+
+        .price { color: var(--primary); font-size: 1.2rem; font-weight: bold; }
+
+        .category { font-size: 0.8rem; background: #334155; padding: 3px 8px; border-radius: 5px; }
+
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #loader { text-align: center; display: none; padding: 20px; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-section">
+        <h2>اضافة منتج جديد 🍰</h2>
+        <div class="input-group">
+            <input type="text" id="pName" placeholder="اسم المنتج">
+            <input type="number" id="pPrice" placeholder="السعر">
+        </div>
+        <div class="input-group">
+            <select id="pCategory">
+                <option value="كيك">كيك</option>
+                <option value="تشيز كيك">تشيز كيك</option>
+                <option value="حلويات أخرى">حلويات أخرى</option>
+            </select>
+            <input type="file" id="pImage" accept="image/*">
+        </div>
+        <textarea id="pDesc" rows="3" placeholder="وصف المنتج..."></textarea>
+        <button class="btn-main" id="saveBtn" onclick="saveProduct()">حفظ ونشر المنتج</button>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2>المنتجات المتوفرة حالياً</h2>
+        <button onclick="loadProducts()" style="background:none; color:var(--primary); border:none; cursor:pointer;">تحديث 🔄</button>
+    </div>
+
+    <div id="loader">جاري معالجة البيانات...</div>
+    <div id="productsDisplay" class="products-grid"></div>
+</div>
+
+<script>
+    // الرابط الخاص بك (Web App URL)
+    const API_URL = "https://script.google.com/macros/s/AKfycbzaSDwpmObxFhPaTxJ0Z2Cx-GgeS3iawR302dJfAhvXsojdjJh7WGeGaebkvFO9WQC7/exec";
+
+    // 1. وظيفة رفع الصورة لـ Cloudinary
+    async function uploadImage(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "products_upload"); // تأكد من إنشاء هذا الـ Preset في Cloudinary
+
+        const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {
+            method: "POST",
+            body: formData
+        });
+        const data = await res.json();
+        return data.secure_url;
+    }
+
+    // 2. وظيفة حفظ المنتج
+    async function saveProduct() {
+        const btn = document.getElementById("saveBtn");
+        const file = document.getElementById("pImage").files[0];
+        
+        const name = document.getElementById("pName").value;
+        const price = document.getElementById("pPrice").value;
+
+        if (!name || !price) return alert("الاسم والسعر مطلوبين!");
+
+        btn.disabled = true;
+        btn.innerText = "جاري الحفظ...";
+
+        try {
+            let imageUrl = "";
+            if (file) {
+                imageUrl = await uploadImage(file);
+            }
+
+            const product = {
+                action: "add",
+                name: name,
+                price: price,
+                category: document.getElementById("pCategory").value,
+                image: imageUrl,
+                description: document.getElementById("pDesc").value
+            };
+
+            await fetch(API_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(product)
+            });
+
+            alert("تمت الإضافة! (قد يستغرق الظهور لحظات)");
+            location.reload();
+        } catch (err) {
+            alert("حدث خطأ: " + err.message);
+            btn.disabled = false;
+        }
+    }
+
+    // 3. وظيفة عرض المنتجات من Google Sheets
+    async function loadProducts() {
+        const loader = document.getElementById("loader");
+        const container = document.getElementById("productsDisplay");
+        
+        loader.style.display = "block";
+        container.innerHTML = "";
+
+        try {
+            const res = await fetch(API_URL);
+            const data = await res.json();
+
+            data.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="card">
+                        <img src="${item.image || 'https://via.placeholder.com/300'}" alt="${item.name}">
+                        <div class="card-body">
+                            <span class="category">${item.category}</span>
+                            <h3>${item.name}</h3>
+                            <div class="price">${item.price} ج.م</div>
+                            <p style="color:#94a3b8; font-size:14px;">${item.description}</p>
+                            <button class="btn-delete" onclick="deleteProduct(${index})">حذف المنتج</button>
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (err) {
+            container.innerHTML = "<p>فشل تحميل البيانات. تأكد من إعدادات Script.</p>";
+        } finally {
+            loader.style.display = "none";
+        }
+    }
+
+    // 4. وظيفة الحذف
+    async function deleteProduct(index) {
+        if (!confirm("هل تريد حذف هذا المنتج؟")) return;
+        
+        // نرسل الـ index كـ ID للحذف (الصف في الشيت)
+        await fetch(`${API_URL}?action=delete&id=${index}`);
+        loadProducts();
+    }
+
+    // تحميل البيانات عند فتح الصفحة
+    loadProducts();
+
+</script>
+
+</body>
+</html>
