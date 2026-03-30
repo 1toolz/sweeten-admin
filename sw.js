@@ -1,46 +1,40 @@
-const CACHE_NAME = 'sweeten-v2'; // نسخة الكاش
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'sweeten-pro-v3';
+const ASSETS = [
   'index.html',
   'manifest.json',
   'https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Amiri:wght@400;700&display=swap'
 ];
 
-// مرحلة التثبيت: حفظ الملفات الأساسية في الكاش
+// تثبيت وحفظ الملفات الأساسية
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('SW: تم حفظ الملفات في الكاش بنجاح');
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(ASSETS);
     })
   );
 });
 
-// مرحلة التنشيط: حذف النسخ القديمة من الكاش
+// تنظيف الكاش القديم عند التحديث
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('SW: حذف الكاش القديم:', cache);
-            return caches.delete(cache);
-          }
+        keys.map((key) => {
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       );
     })
   );
 });
 
-// استراتيجية "الشبكة أولاً" مع الرجوع للكاش في حالة انقطاع الإنترنت
+// استراتيجية التحميل: الشبكة أولاً، ثم الكاش في حالة الطوارئ
 self.addEventListener('fetch', (event) => {
-  // لا تقم بكاش لطلبات الـ API أو Cloudinary لضمان تحديث البيانات
+  // عدم تخزين طلبات الـ API لضمان تحديث المنتجات لحظياً
   if (event.request.url.includes('google.com') || event.request.url.includes('cloudinary')) {
-    return; 
+    return;
   }
-
+  
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
-    })
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });
