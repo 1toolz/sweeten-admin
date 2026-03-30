@@ -7,11 +7,14 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#eab308">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#fff9f5">
+
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root { 
-            --bg-page: #fff9f5; --glass: rgba(255, 255, 255, 0.8);
+            --bg-page: #fff9f5; --glass: rgba(255, 255, 255, 0.85);
             --text-dark: #452e1f; --brand-yellow: #eab308; 
             --brand-gold: #c5a044; --border-soft: #e9e1dc;
             --shadow: 0 10px 30px rgba(93, 58, 36, 0.08);
@@ -23,13 +26,13 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 9999; transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
         }
-        .gray-logo { width: 130px; filter: grayscale(100%); opacity: 0.4; animation: float 3s infinite ease-in-out; border-radius: 50%; }
+        .gray-logo { width: 140px; filter: grayscale(100%); opacity: 0.5; animation: float 3s infinite ease-in-out; border-radius: 50%; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        /* --- مؤشر المعالجة (Glass Loading) --- */
+        /* --- مؤشر المعالجة الزجاجي --- */
         #uploadingOverlay {
             position: fixed; inset: 0; background: rgba(255, 249, 245, 0.7);
-            backdrop-filter: blur(10px); display: none; flex-direction: column; 
+            backdrop-filter: blur(8px); display: none; flex-direction: column; 
             align-items: center; justify-content: center; z-index: 9998;
         }
 
@@ -39,18 +42,15 @@
             min-height: 100vh; overflow-x: hidden;
         }
         
-        .container { max-width: 850px; margin: auto; display: none; animation: fadeIn 0.8s ease; }
+        .container { max-width: 850px; margin: auto; display: none; animation: fadeIn 0.8s ease; width: 100%; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- الإحصائيات التفاعلية --- */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
         .stat-card { 
-            background: var(--glass); backdrop-filter: blur(5px); 
-            padding: 18px; border-radius: 25px; text-align: center; 
-            border: 1px solid white; box-shadow: var(--shadow);
-            cursor: pointer; transition: 0.3s;
+            background: var(--glass); padding: 18px; border-radius: 25px; text-align: center; 
+            border: 1px solid white; box-shadow: var(--shadow); transition: 0.3s;
         }
-        .stat-card:active { transform: scale(0.95); }
         .stat-card span { display: block; font-size: 26px; font-weight: bold; color: var(--brand-gold); }
         .stat-card label { font-size: 13px; color: #8c7365; font-weight: bold; }
 
@@ -60,45 +60,44 @@
             color: var(--text-dark); border: none; padding: 16px; 
             border-radius: 50px; font-weight: bold; font-size: 19px; 
             cursor: pointer; transition: 0.4s; width: 100%; margin-top: 15px;
-            box-shadow: 0 10px 20px rgba(234, 179, 8, 0.2);
+            box-shadow: 0 10px 20px rgba(234, 179, 8, 0.2); font-family: 'Amiri', serif;
         }
         .btn-brand:hover { box-shadow: 0 15px 30px rgba(234, 179, 8, 0.35); transform: translateY(-3px); }
 
-        /* --- نماذج الإدخال العصرية --- */
+        /* --- الفورم --- */
         .form-section { 
             background: white; padding: 30px; border-radius: 30px; 
-            border: 1px solid var(--border-soft); margin-bottom: 30px;
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border-soft); margin-bottom: 30px; box-shadow: var(--shadow);
         }
         input, select, textarea { 
             width: 100%; padding: 14px; margin: 10px 0; border-radius: 18px; 
             border: 1px solid var(--border-soft); background: #fdfaf8; 
-            font-family: 'Amiri', serif; font-size: 16px; transition: 0.3s;
+            font-family: 'Amiri', serif; font-size: 16px; box-sizing: border-box;
         }
-        input:focus { border-color: var(--brand-yellow); background: white; outline: none; }
 
-        /* --- كروت المنتجات الديناميكية --- */
+        /* --- كروت المنتجات --- */
         .card { 
             background: white; border-radius: 25px; padding: 18px; margin-bottom: 15px; 
             display: flex; gap: 18px; border: 1px solid var(--border-soft); 
             align-items: center; transition: 0.4s;
         }
-        .card:hover { transform: scale(1.02); box-shadow: var(--shadow); }
         .card img { width: 80px; height: 80px; border-radius: 20px; object-fit: cover; }
-        
         .badge { background: #fffbeb; color: var(--brand-gold); padding: 4px 14px; border-radius: 50px; font-size: 12px; font-weight: bold; border: 1px solid #fef3c7; }
 
-        /* --- نظام الدخول --- */
+        /* --- الدخول --- */
         #loginOverlay { position: fixed; inset: 0; background: var(--bg-page); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .login-box { background: white; padding: 45px; border-radius: 35px; text-align: center; width: 330px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); }
 
-        /* --- الختم تحت خالص --- */
-        footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid var(--border-soft); display: flex; justify-content: center; }
-        .dev-stamp { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        /* --- الختم المطور تحت خالص --- */
+        footer { margin-top: 60px; padding: 30px 0; border-top: 1px solid var(--border-soft); display: flex; justify-content: center; background: #faf6f3; width: 100%; }
+        .dev-stamp { display: flex; align-items: center; gap: 15px; text-decoration: none; color: var(--text-dark); transition: 0.3s; }
         .stamp-circle { width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #ddd; }
         .stamp-circle::before { content: ''; position: absolute; top: 7px; left: 5px; width: 7px; height: 7px; background: var(--brand-yellow); border-radius: 50%; box-shadow: 0 0 10px var(--brand-yellow); }
-        .stamp-initials { font-family: 'Great Vibes', cursive; font-size: 26px; color: #5d3a24; }
+        .stamp-initials { font-family: 'Great Vibes', cursive; font-size: 26px; color: #5d3a24; margin-top: -4px; }
         .dev-full-name { font-family: 'Dancing Script', cursive; font-size: 20px; color: var(--text-dark); font-weight: bold; }
+        
+        .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-yellow); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -109,7 +108,7 @@
 </div>
 
 <div id="uploadingOverlay">
-    <div style="width: 45px; height: 45px; border: 4px solid #f3f3f3; border-top: 4px solid var(--brand-yellow); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <div class="spinner"></div>
     <p style="margin-top:20px; font-weight:bold; font-size: 18px;">جاري تحديث عالمك الخاص...</p>
 </div>
 
@@ -124,32 +123,27 @@
 
 <div class="container" id="app">
     <div class="stats-grid">
-        <div class="stat-card" onclick="renderList(allProducts)">
-            <span id="stat-total">0</span><label>منتجاتنا</label>
-        </div>
-        <div class="stat-card">
-            <span id="stat-cats">0</span><label>أقسام</label>
-        </div>
-        <div class="stat-card">
-            <span id="stat-max">0</span><label>أعلى سعر</label>
-        </div>
+        <div class="stat-card"><span id="stat-total">0</span><label>منتج</label></div>
+        <div class="stat-card"><span id="stat-cats">0</span><label>أقسام</label></div>
+        <div class="stat-card"><span id="stat-max">0</span><label>أعلى سعر</label></div>
     </div>
 
     <div class="form-section">
         <h2 id="formTitle" style="margin-top:0">إضافة قطعة سكر جديدة 🍰</h2>
         <input type="hidden" id="editId">
-        <div style="display:flex; gap:12px;"><input type="text" id="pName" placeholder="اسم المنتج"><input type="number" id="pPrice" placeholder="السعر"></div>
+        <div style="display:flex; gap:12px;"><input type="text" id="pName" placeholder="الاسم"><input type="number" id="pPrice" placeholder="السعر"></div>
         <div style="display:flex; gap:12px;"><select id="pCategory"></select><input type="text" id="newCat" placeholder="أو قسم جديد"></div>
         <input type="file" id="pImage" accept="image/*">
         <textarea id="pDesc" rows="2" placeholder="وصف المنتج (اختياري)"></textarea>
         <button class="btn-brand" id="saveBtn" onclick="save()">حفظ وتحديث المتجر</button>
-        <button id="cancelBtn" onclick="resetForm()" style="display:none; width:100%; background:#94a3b8; color:white; border:none; padding:12px; margin-top:10px; border-radius:50px; cursor:pointer;">إلغاء</button>
+        <button id="cancelBtn" onclick="resetForm()" style="display:none; width:100%; background:#94a3b8; color:white; border:none; padding:12px; margin-top:10px; border-radius:50px; cursor:pointer;">إلغاء التعديل</button>
     </div>
 
     <div style="margin-bottom: 20px;">
         <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="ابحث عن أي منتج بالاسم..." style="background: white; border-radius: 50px; padding-right: 25px;">
     </div>
 
+    <div id="status" style="text-align:center; display:none; color:#8c7365;">جاري تحديث البيانات...</div>
     <div id="list"></div>
     
     <footer>
@@ -169,34 +163,52 @@
     let allProducts = [];
     let lastImg = "";
 
+    // التحكم في شاشة الترحيب
     window.onload = () => setTimeout(() => {
         document.getElementById('splash').style.transform = 'translateY(-100%)';
         setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
     }, 2500);
+
+    // تسجيل الـ Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error', err));
+    }
 
     function login() {
         if (document.getElementById("passInput").value === PASS) {
             document.getElementById("loginOverlay").style.display = "none";
             document.getElementById("app").style.display = "block";
             fetchData();
-        } else alert("الكود السري غير صحيح!");
+        } else alert("الكود غير صحيح!");
+    }
+
+    async function uploadCloudinary(file) {
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", "products_upload");
+        const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {method:"POST", body:fd});
+        const d = await res.json();
+        return d.secure_url;
     }
 
     async function fetchData() {
-        const r = await fetch(API);
-        const data = await r.json();
-        allProducts = data.products;
-        
-        document.getElementById("stat-total").innerText = allProducts.length;
-        document.getElementById("stat-cats").innerText = data.categories.length;
-        const prices = allProducts.map(p => parseFloat(p.price) || 0);
-        document.getElementById("stat-max").innerText = (prices.length ? Math.max(...prices) : 0) + " ج";
+        document.getElementById("status").style.display = "block";
+        try {
+            const r = await fetch(API);
+            const data = await r.json();
+            allProducts = data.products;
+            
+            document.getElementById("stat-total").innerText = allProducts.length;
+            document.getElementById("stat-cats").innerText = data.categories.length;
+            const prices = allProducts.map(p => parseFloat(p.price) || 0);
+            document.getElementById("stat-max").innerText = (prices.length ? Math.max(...prices) : 0) + " ج";
 
-        const sel = document.getElementById("pCategory");
-        sel.innerHTML = '<option value="">اختر قسم...</option>';
-        data.categories.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
+            const sel = document.getElementById("pCategory");
+            sel.innerHTML = '<option value="">اختر قسم...</option>';
+            data.categories.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
 
-        renderList(allProducts);
+            renderList(allProducts);
+        } finally { document.getElementById("status").style.display = "none"; }
     }
 
     function renderList(products) {
@@ -222,22 +234,13 @@
         renderList(filtered);
     }
 
-    async function uploadCloudinary(file) {
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("upload_preset", "products_upload");
-        const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {method:"POST", body:fd});
-        const d = await res.json();
-        return d.secure_url;
-    }
-
     async function save() {
         const overlay = document.getElementById("uploadingOverlay");
         const id = document.getElementById("editId").value;
         const file = document.getElementById("pImage").files[0];
         const cat = document.getElementById("newCat").value || document.getElementById("pCategory").value;
 
-        if (!document.getElementById("pName").value || !cat) return alert("اكمل البيانات الأساسية");
+        if (!document.getElementById("pName").value || !cat) return alert("اكمل البيانات");
 
         overlay.style.display = "flex";
         try {
@@ -256,7 +259,7 @@
 
             await fetch(API, {method:"POST", mode:"no-cors", body:JSON.stringify(payload)});
             resetForm(); fetchData();
-        } catch(e) { alert("حدث خطأ في الاتصال"); }
+        } catch(e) { alert("خطأ في الاتصال"); }
         finally { overlay.style.display = "none"; }
     }
 
@@ -273,7 +276,7 @@
     }
 
     async function handleDelete(id) {
-        if (!confirm("هل تريد حذف هذا المنتج؟")) return;
+        if (!confirm("هل تريد الحذف؟")) return;
         document.getElementById("uploadingOverlay").style.display = "flex";
         await fetch(`${API}?action=delete&id=${id}`);
         fetchData();
