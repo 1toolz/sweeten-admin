@@ -3,252 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم | حلي حياتك</title>
+    <title>Sweeten Admin | Abdulrahman Saeed Elbass</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#c5a044">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#fff9f5">
+
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         :root { 
-            /* لوحة الألوان الجديدة مستوحاة من صور الهوية البصرية */
-            --bg-page: #fff9f5; /* لون الخلفية الكريمي الفاتح */
-            --card-bg: #ffffff; /* لون الكروت الأبيض النقي */
-            --text-main: #5d3a24; /* البني الداكن للنصوص الأساسية */
-            --text-sub: #8c7365; /* البني الفاتح للنصوص الثانوية */
-            --primary-gold: #c5a044; /* الذهبي للأزرار والعناصر النشطة */
-            --border-color: #e9e1dc; /* لون الحدود الناعم */
-            --danger-red: #ef4444; 
-            --success-green: #22c55e;
-            --input-bg: #fdf2f8; /* خلفية الحقول بلون فاتح جداً */
-            
-            /* ألوان الختم الخاص بك */
-            --stamp-gold: #c5a044;
+            --bg-page: #fff9f5; 
+            --card-bg: #ffffff; 
+            --text-main: #5d3a24; 
+            --primary-gold: #c5a044; 
+            --border-color: #e9e1dc; 
+            --stamp-gold: #c5a044; 
             --stamp-brown: #5d3a24;
-            --stamp-bg: #fff9f5;
         }
+
+        /* --- شاشة الترحيب (Splash Screen) --- */
+        #splash {
+            position: fixed; inset: 0; background: var(--bg-page);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999; transition: opacity 0.8s ease-out;
+        }
+        .gray-logo {
+            width: 150px; height: 150px;
+            filter: grayscale(100%); opacity: 0.5; /* لوجو رمادي */
+            margin-bottom: 20px; border-radius: 50%;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
         body { 
             background: var(--bg-page); color: var(--text-main); 
-            font-family: 'Amiri', serif; /* خط عربي أصيل يتناسب مع الهوية */
-            margin: 0; padding: 20px; 
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Amiri', serif; margin: 0; padding: 20px; 
+            min-height: 100vh; display: flex; flex-direction: column; 
         }
+        
         .container { max-width: 800px; margin: auto; display: none; width: 100%; flex: 1; }
         
-        /* التنسيقات العامة للنموذج (Form) */
-        .form-section { 
-            background: var(--card-bg); padding: 30px; border-radius: 20px; 
-            border: 1px solid var(--border-color); margin-bottom: 30px; 
-            box-shadow: 0 15px 35px rgba(93, 58, 36, 0.05); 
-        }
-        h2 { color: var(--text-main); font-weight: 700; margin-top: 0; }
-        
-        input, select, textarea { 
-            width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; 
-            border: 1px solid var(--border-color); background: var(--input-bg); 
-            color: var(--text-main); box-sizing: border-box; 
-            font-family: 'Amiri', serif; font-size: 16px;
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-gold);
-            box-shadow: 0 0 10px rgba(197, 160, 68, 0.1);
-        }
-
-        button { 
-            cursor: pointer; border: none; border-radius: 10px; 
-            font-weight: bold; padding: 14px; transition: 0.3s; 
-            font-family: 'Amiri', serif; font-size: 16px;
-        }
-        
-        /* زر الحفظ الذهبي اللامع */
-        .btn-main { 
-            background: var(--primary-gold); color: white; width: 100%; 
-            font-size: 18px; margin-top: 15px; 
-            box-shadow: 0 5px 15px rgba(197, 160, 68, 0.2);
-        }
-        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-main:disabled { background: #dcd3cc; cursor: not-allowed; box-shadow: none; }
-        
-        /* تنسيق كروت المنتجات */
-        .card { 
-            background: var(--card-bg); border-radius: 15px; padding: 20px; 
-            margin-bottom: 15px; display: flex; gap: 20px; 
-            border: 1px solid var(--border-color); align-items: center; 
-            box-shadow: 0 8px 20px rgba(93, 58, 36, 0.03);
-            transition: 0.3s;
-        }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(93, 58, 36, 0.06); }
-        .card img { width: 85px; height: 85px; border-radius: 12px; object-fit: cover; background: #faf5f2; border: 1px solid var(--border-color); }
-        .card-info { flex: 1; }
-        .card-info h4 { margin: 0; font-size: 18px; color: var(--text-main); }
-        .card-info p { margin: 8px 0; color: var(--primary-gold); font-weight: bold; font-size: 18px; }
-        .card-info small { color: var(--text-sub); }
-
-        .card-actions { display: flex; gap: 12px; margin-top: 12px; }
-        .btn-edit { background: #fdf2f8; color: var(--primary-gold); flex: 1; border: 1px solid #f9dbe9; font-size: 14px; }
-        .btn-edit:hover { background: #f9dbe9; }
-        .btn-del { background: #fff1f0; color: var(--danger-red); flex: 1; border: 1px solid #ffccc7; font-size: 14px; }
-        .btn-del:hover { background: #ffccc7; }
-        
-        /* شاشة تسجيل الدخول بتصميم الهوية */
+        /* التنسيقات */
         #loginOverlay { position: fixed; inset: 0; background: var(--bg-page); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-box { 
-            background: var(--card-bg); padding: 45px; border-radius: 20px; 
-            text-align: center; border: 1px solid var(--border-color); width: 320px; 
-            box-shadow: 0 25px 60px rgba(93, 58, 36, 0.1); 
-        }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid var(--border-color); width: 300px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
         
-        #status { text-align: center; color: var(--primary-gold); display: none; padding: 15px; font-weight: bold; }
+        .form-section { background: white; padding: 25px; border-radius: 20px; border: 1px solid var(--border-color); margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border-color); background: #fffcf9; box-sizing: border-box; font-family: 'Amiri', serif; font-size: 16px; }
+        
+        .btn-main { background: var(--primary-gold); color: white; border: none; padding: 14px; border-radius: 10px; cursor: pointer; width: 100%; font-weight: bold; font-size: 18px; transition: 0.3s; }
+        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* --- تصميم ختم المبرمج في أسفل الصفحة (Footer) --- */
-        footer {
-            margin-top: auto; /* يدفع الـ footer للأسفل */
-            padding: 30px 0;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #faf5f2; /* تظليل خفيف لخلفية الـ footer */
-            width: 100%;
-        }
+        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; gap: 15px; border: 1px solid var(--border-color); align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .card img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; border: 1px solid #eee; }
+        .card-info { flex: 1; }
+        .card-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-edit { background: #fdf2f8; color: var(--primary-gold); font-size: 13px; border: 1px solid #f9dbe9; padding: 5px 15px; border-radius: 8px; cursor: pointer; }
+        .btn-del { background: #fff1f0; color: #ef4444; font-size: 13px; border: 1px solid #ffccc7; padding: 5px 15px; border-radius: 8px; cursor: pointer; }
 
-        .dev-stamp { 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            text-decoration: none; 
-            opacity: 0.9;
-            transition: 0.3s;
-        }
-        .dev-stamp:hover { opacity: 1; transform: scale(1.02); }
+        #status { text-align: center; color: var(--primary-gold); font-weight: bold; padding: 10px; display: none; }
 
-        .stamp-circle { 
-            width: 50px; height: 50px; 
-            background: var(--stamp-bg); 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            border: 1px solid var(--border-color); 
-            box-shadow: 0 6px 15px rgba(93, 58, 36, 0.1); 
-        }
-        .stamp-circle::before { 
-            content: ''; position: absolute; 
-            top: 8px; left: 5px; 
-            width: 7px; height: 7px; 
-            background: var(--stamp-gold); 
-            border-radius: 50%; 
-            box-shadow: 0 0 10px var(--stamp-gold); 
-        }
-        .stamp-initials { 
-            font-family: 'Great Vibes', cursive; 
-            font-size: 28px; 
-            color: var(--stamp-brown); 
-            margin-top: -3px; 
-        }
-        .dev-name-box { display: flex; flex-direction: column; align-items: flex-start; }
-        .dev-by { font-size: 10px; letter-spacing: 2px; color: var(--text-sub); font-weight: bold; text-transform: uppercase; }
-        .dev-full-name { 
-            font-family: 'Dancing Script', cursive; 
-            font-size: 20px; 
-            color: var(--text-main); 
-            font-weight: bold;
-        }
+        /* ختم المبرمج في الأسفل */
+        footer { margin-top: 50px; padding: 20px 0; border-top: 1px solid var(--border-color); display: flex; justify-content: center; }
+        .dev-stamp { display: flex; align-items: center; gap: 12px; text-decoration: none; transition: 0.3s; }
+        .dev-stamp:hover { transform: scale(1.05); }
+        .stamp-circle { width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .stamp-circle::before { content: ''; position: absolute; top: 7px; left: 5px; width: 6px; height: 6px; background: var(--stamp-gold); border-radius: 50%; box-shadow: 0 0 8px var(--stamp-gold); }
+        .stamp-initials { font-family: 'Great Vibes', cursive; font-size: 26px; color: var(--stamp-brown); margin-top: -4px; }
+        .dev-full-name { font-family: 'Dancing Script', cursive; font-size: 20px; color: var(--text-main); font-weight: bold; }
     </style>
 </head>
 <body>
 
+<div id="splash">
+    <img src="https://scontent.fcai20-2.fna.fbcdn.net/v/t39.30808-6/427791635_122110701860207237_612968014316171595_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=53a332&_nc_ohc=oZgWIBB9_t4Q7kNvwHkWe_s&_nc_oc=AdovNTfGFE7vDn_KW4_qBcnulwk-PdTChcm22kjb-i5wS3-pjfw3ZyB1f_NlJ5jKyYo&_nc_zt=23&_nc_ht=scontent.fcai20-2.fna&_nc_gid=HED6rmsYTmGbZ5XPmVc1cw&_nc_ss=7a3a8&oh=00_AfyG5diyEh-rdKZ7jWekx8vKEotc0XTdznUSC8xY7Wt54g&oe=69CFBDBD" class="gray-logo">
+    <p style="color: #8c7365; font-weight: bold; letter-spacing: 1px;">SWEETEN YOUR LIFE</p>
+</div>
+
 <div id="loginOverlay">
     <div class="login-box">
-        <h2 style="color:var(--text-main)">لوحة الإدارة الفاخرة</h2>
-        <p style="font-size: 14px; color: var(--text-sub); margin-bottom: 25px;">أدخل الكود السري للوصول</p>
+        <h2 style="margin-bottom:10px; color:var(--text-main);">دخول المشرف</h2>
+        <p style="font-size:14px; color:#8c7365; margin-bottom:20px;">يرجى إدخال الكود السري للوصول</p>
         <input type="password" id="passInput" placeholder="الكود السري">
-        <button class="btn-main" onclick="checkLogin()">دخول اللوحة</button>
+        <button class="btn-main" onclick="login()">دخول اللوحة</button>
     </div>
 </div>
 
-<div class="container" id="adminApp">
-    
+<div class="container" id="app">
     <div class="form-section">
-        <h2 id="formTitle">إضافة منتج جديد ✨</h2>
+        <h2 id="formTitle" style="margin-top:0">إضافة منتج جديد ✨</h2>
         <input type="hidden" id="editId">
-        <div style="display:flex; gap:15px;">
+        
+        <div style="display:flex; gap:10px;">
             <input type="text" id="pName" placeholder="اسم المنتج">
             <input type="number" id="pPrice" placeholder="السعر (ج.م)">
         </div>
-        <div style="display:flex; gap:15px; align-items: center;">
-            <select id="pCategory" style="flex: 1;"></select>
-            <input type="text" id="newCat" placeholder="أو قسم جديد..." style="flex: 1.5;">
+        
+        <div style="display:flex; gap:10px; align-items: center;">
+            <select id="pCategory" style="flex:1"></select>
+            <input type="text" id="newCat" placeholder="أو قسم جديد..." style="flex:1">
         </div>
+        
         <input type="file" id="pImage" accept="image/*">
         <textarea id="pDesc" rows="2" placeholder="وصف المنتج التفصيلي"></textarea>
-        <button class="btn-main" id="saveBtn" onclick="handleSave()">حفظ ونشر البيانات</button>
-        <button id="cancelBtn" onclick="resetForm()" style="display:none; background:#475569; color:white; width:100%; margin-top:10px;">إلغاء التعديل</button>
+        
+        <button class="btn-main" id="saveBtn" onclick="save()">حفظ ونشر البيانات</button>
+        <button id="cancelBtn" onclick="resetForm()" style="display:none; background:#475569; color:white; width:100%; margin-top:5px; border-radius:10px; border:none; padding:10px; cursor:pointer;">إلغاء التعديل</button>
     </div>
 
-    <div id="status">جاري تحديث البيانات...</div>
-    <div id="productList"></div>
-
+    <div id="status">جاري معالجة البيانات...</div>
+    <div id="list"></div>
+    
+    <footer>
+        <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="dev-stamp">
+            <div class="stamp-circle"><span class="stamp-initials">a.</span></div>
+            <div style="display:flex; flex-direction:column; align-items: flex-start;">
+                <span style="font-size:9px; color:#8c7365; font-weight:bold;">DEVELOPED BY</span>
+                <span class="dev-full-name">Abdulrahman Saeed Elbass</span>
+            </div>
+        </a>
+    </footer>
 </div>
 
-<footer>
-    <a href="https://www.facebook.com/abdoo.elbass" target="_blank" class="dev-stamp">
-        <div class="stamp-circle"><span class="stamp-initials">a.</span></div>
-        <div class="dev-name-box">
-            <span class="dev-by">Developed by</span>
-            <span class="dev-full-name">Abdulrahman Saeed Elbass</span>
-        </div>
-    </a>
-</footer>
-
 <script>
-    // 🔗 الرابط الخاص بك (لا يزال يعمل)
+    // الرابط الخاص بك
     const API = "https://script.google.com/macros/s/AKfycbzh560dH73AznHozzIqzZtOaDGw0WOZMGEqsqipZMXuClGXFyqlKNOiSFCBkXaQoRXw/exec";
     const PASS = "2026";
-    let lastImageUrl = "";
+    let lastImg = "";
 
-    function checkLogin() {
+    // التحكم في شاشة الترحيب
+    window.onload = () => {
+        setTimeout(() => {
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
+        }, 2500);
+    };
+
+    function login() {
         if (document.getElementById("passInput").value === PASS) {
             document.getElementById("loginOverlay").style.display = "none";
-            document.getElementById("adminApp").style.display = "block";
+            document.getElementById("app").style.display = "block";
             fetchData();
-        } else { alert("الكود غير صحيح!"); }
+        } else { alert("الكود السري غير صحيح!"); }
     }
 
-    async function uploadToCloudinary(file) {
+    async function uploadCloudinary(file) {
         const fd = new FormData();
         fd.append("file", file);
         fd.append("upload_preset", "products_upload");
-        try {
-            const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {method:"POST", body:fd});
-            const d = await res.json();
-            return d.secure_url;
-        } catch (e) {
-            alert("خطأ في رفع الصورة!");
-            return "";
-        }
+        const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {method:"POST", body:fd});
+        const d = await res.json();
+        return d.secure_url;
     }
 
     async function fetchData() {
-        document.getElementById("status").style.display = "block";
+        const status = document.getElementById("status");
+        status.style.display = "block";
         try {
             const r = await fetch(API);
             const data = await r.json();
             
-            // تحديث الأقسام
-            const catSel = document.getElementById("pCategory");
-            catSel.innerHTML = '<option value="">اختر قسم موجود...</option>';
-            data.categories.forEach(c => catSel.innerHTML += `<option value="${c}">${c}</option>`);
+            const sel = document.getElementById("pCategory");
+            sel.innerHTML = '<option value="">اختر قسم موجود...</option>';
+            data.categories.forEach(c => sel.innerHTML += `<option value="${c}">${c}</option>`);
 
-            // عرض المنتجات (الأحدث أولاً)
-            const listArea = document.getElementById("productList");
-            listArea.innerHTML = data.products.reverse().map(p => `
+            const area = document.getElementById("list");
+            area.innerHTML = data.products.reverse().map(p => `
                 <div class="card">
-                    <img src="${p.image || 'https://via.placeholder.com/85'}" onerror="this.src='https://via.placeholder.com/85'">
+                    <img src="${p.image || 'https://via.placeholder.com/75'}" onerror="this.src='https://via.placeholder.com/75'">
                     <div class="card-info">
-                        <h4>${p.name} <small>(${p.category})</small></h4>
-                        <p>${p.price} ج.م</p>
+                        <h4 style="margin:0">${p.name} <small style="color:var(--primary-gold)">(${p.category})</small></h4>
+                        <p style="margin:5px 0;">${p.price} ج.م</p>
                         <div class="card-actions">
                             <button class="btn-edit" onclick='initEdit(${JSON.stringify(p)})'>تعديل</button>
                             <button class="btn-del" onclick="handleDelete(${p.id})">حذف</button>
@@ -256,41 +182,39 @@
                     </div>
                 </div>
             `).join('');
-        } catch (e) {
-            console.error(e);
-        } finally { document.getElementById("status").style.display = "none"; }
+        } catch(e) { console.error(e); }
+        finally { status.style.display = "none"; }
     }
 
-    async function handleSave() {
+    async function save() {
         const btn = document.getElementById("saveBtn");
         const id = document.getElementById("editId").value;
         const file = document.getElementById("pImage").files[0];
-        const category = document.getElementById("newCat").value || document.getElementById("pCategory").value;
+        const cat = document.getElementById("newCat").value || document.getElementById("pCategory").value;
 
-        if (!document.getElementById("pName").value || !category) return alert("الاسم والقسم مطلوبان!");
+        if (!document.getElementById("pName").value || !cat) return alert("يرجى إدخال الاسم والقسم!");
 
         btn.disabled = true; btn.innerText = "جاري الحفظ...";
 
         try {
-            let img = lastImageUrl;
-            if (file) img = await uploadToCloudinary(file);
+            let imgUrl = lastImg;
+            if (file) imgUrl = await uploadCloudinary(file);
 
             const payload = {
                 action: id ? "edit" : "add",
                 id: id,
                 name: document.getElementById("pName").value,
                 price: document.getElementById("pPrice").value,
-                category: category,
-                image: img,
+                category: cat,
+                image: imgUrl,
                 description: document.getElementById("pDesc").value
             };
 
             await fetch(API, {method:"POST", mode:"no-cors", body:JSON.stringify(payload)});
-            alert("تم حفظ البيانات بنجاح!");
+            alert("تمت العملية بنجاح!");
             resetForm(); fetchData();
-        } catch(e) {
-            alert("حدث خطأ في الاتصال");
-        } finally { btn.disabled = false; btn.innerText = "حفظ ونشر البيانات"; }
+        } catch(e) { alert("حدث خطأ في الاتصال"); }
+        finally { btn.disabled = false; btn.innerText = "حفظ ونشر البيانات"; }
     }
 
     function initEdit(p) {
@@ -300,15 +224,15 @@
         document.getElementById("pPrice").value = p.price;
         document.getElementById("pCategory").value = p.category;
         document.getElementById("pDesc").value = p.description;
-        lastImageUrl = p.image;
+        lastImg = p.image;
         document.getElementById("cancelBtn").style.display = "block";
-        document.getElementById("saveBtn").innerText = "تحديث المنتج";
+        document.getElementById("saveBtn").innerText = "تحديث البيانات";
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    async function handleDelete(rowId) {
-        if (!confirm("هل تريد حذف هذا المنتج نهائياً من الشيت؟")) return;
-        await fetch(`${API}?action=delete&id=${rowId}`);
+    async function handleDelete(id) {
+        if (!confirm("هل أنت متأكد من الحذف؟")) return;
+        await fetch(`${API}?action=delete&id=${id}`);
         fetchData();
     }
 
@@ -316,10 +240,10 @@
         document.getElementById("formTitle").innerText = "إضافة منتج جديد ✨";
         document.getElementById("editId").value = "";
         document.getElementById("saveBtn").innerText = "حفظ ونشر البيانات";
-        document.getElementById("saveBtn").disabled = false;
         document.getElementById("cancelBtn").style.display = "none";
+        document.getElementById("saveBtn").disabled = false;
         ["pName", "pPrice", "newCat", "pDesc", "pImage"].forEach(i => document.getElementById(i).value = "");
-        lastImageUrl = "";
+        lastImg = "";
     }
 </script>
 </body>
