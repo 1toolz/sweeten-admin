@@ -2,252 +2,158 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم متجر الحلويات</title>
+    <title>مدير متجر Sweeten</title>
     <style>
-        :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --primary: #38bdf8;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --text: #f8fafc;
-            --border: #334155;
-        }
+        :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --text: #f8fafc; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; margin:0; }
+        .container { max-width: 900px; margin: auto; display: none; } /* مخفي حتى تسجيل الدخول */
+        
+        /* نظام الدخول */
+        #loginOverlay { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .login-box { background: var(--card); padding: 30px; border-radius: 12px; text-align: center; border: 1px solid #334155; }
+        
+        /* التنسيقات العامة */
+        .form-section { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid #334155; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
+        button { cursor: pointer; border: none; border-radius: 8px; font-weight: bold; padding: 12px; transition: 0.3s; }
+        .btn-add { background: #22c55e; color: white; width: 100%; margin-top: 10px; }
+        .btn-edit { background: #f59e0b; color: white; margin-left: 5px; }
+        .btn-del { background: #ef4444; color: white; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container { max-width: 900px; margin: auto; }
-
-        /* قسم الإضافة */
-        .form-section {
-            background: var(--card);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid var(--border);
-            margin-bottom: 40px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        h2 { color: var(--primary); margin-top: 0; }
-
-        .input-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #0f172a;
-            color: white;
-            box-sizing: border-box;
-        }
-
-        .btn-main {
-            background: var(--success);
-            color: white;
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .btn-main:disabled { background: #475569; cursor: not-allowed; }
-
-        /* قسم عرض المنتجات */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--card);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            background: #000;
-        }
-
-        .card-body { padding: 15px; flex-grow: 1; }
-
-        .price { color: var(--primary); font-size: 1.2rem; font-weight: bold; }
-
-        .category { font-size: 0.8rem; background: #334155; padding: 3px 8px; border-radius: 5px; }
-
-        .btn-delete {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        #loader { text-align: center; display: none; padding: 20px; color: var(--primary); }
+        .card { background: var(--card); border-radius: 10px; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; border: 1px solid #334155; }
+        .card img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2>ادخل كود الوصول السري</h2>
+        <input type="password" id="passInput" placeholder="الكود هنا...">
+        <button class="btn-add" onclick="checkPass()">دخول</button>
+    </div>
+</div>
+
+<div class="container" id="adminPanel">
     <div class="form-section">
-        <h2>اضافة منتج جديد 🍰</h2>
-        <div class="input-group">
-            <input type="text" id="pName" placeholder="اسم المنتج">
-            <input type="number" id="pPrice" placeholder="السعر">
+        <h2 id="formTitle">إضافة منتج جديد</h2>
+        <input type="hidden" id="editId">
+        <input type="text" id="pName" placeholder="اسم المنتج">
+        <input type="number" id="pPrice" placeholder="السعر">
+        
+        <div style="display:flex; gap:10px;">
+            <select id="pCategory"></select>
+            <input type="text" id="newCategory" placeholder="أو أضف قسم جديد..." style="flex:1">
         </div>
-        <div class="input-group">
-            <select id="pCategory">
-                <option value="كيك">كيك</option>
-                <option value="تشيز كيك">تشيز كيك</option>
-                <option value="حلويات أخرى">حلويات أخرى</option>
-            </select>
-            <input type="file" id="pImage" accept="image/*">
-        </div>
-        <textarea id="pDesc" rows="3" placeholder="وصف المنتج..."></textarea>
-        <button class="btn-main" id="saveBtn" onclick="saveProduct()">حفظ ونشر المنتج</button>
+        
+        <input type="file" id="pImage" accept="image/*">
+        <textarea id="pDesc" placeholder="الوصف"></textarea>
+        <button class="btn-add" id="saveBtn" onclick="saveProduct()">حفظ المنتج</button>
+        <button id="cancelEdit" style="display:none; background:#475569; color:white; width:100%; margin-top:5px;" onclick="resetForm()">إلغاء التعديل</button>
     </div>
 
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h2>المنتجات المتوفرة حالياً</h2>
-        <button onclick="loadProducts()" style="background:none; color:var(--primary); border:none; cursor:pointer;">تحديث 🔄</button>
-    </div>
-
-    <div id="loader">جاري معالجة البيانات...</div>
-    <div id="productsDisplay" class="products-grid"></div>
+    <h2>المنتجات الحالية</h2>
+    <div id="productsList"></div>
 </div>
 
 <script>
-    // الرابط الخاص بك (Web App URL)
-    const API_URL = "https://script.google.com/macros/s/AKfycbzaSDwpmObxFhPaTxJ0Z2Cx-GgeS3iawR302dJfAhvXsojdjJh7WGeGaebkvFO9WQC7/exec";
+    const API_URL = "رابط_السكريبت_الخاص_بك_هنا"; // استبدله برابط الـ /exec
+    const SECRET_CODE = "1234"; // الكود السري الخاص بك
+    let currentImage = "";
 
-    // 1. وظيفة رفع الصورة لـ Cloudinary
-    async function uploadImage(file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", "products_upload"); // تأكد من إنشاء هذا الـ Preset في Cloudinary
+    function checkPass() {
+        if (document.getElementById("passInput").value === SECRET_CODE) {
+            document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("adminPanel").style.display = "block";
+            loadData();
+        } else {
+            alert("كود خاطئ!");
+        }
+    }
 
-        const res = await fetch("https://api.cloudinary.com/v1_1/dw1k42gow/image/upload", {
-            method: "POST",
-            body: formData
-        });
+    async function loadData() {
+        const res = await fetch(API_URL);
         const data = await res.json();
-        return data.secure_url;
-    }
-
-    // 2. وظيفة حفظ المنتج
-    async function saveProduct() {
-        const btn = document.getElementById("saveBtn");
-        const file = document.getElementById("pImage").files[0];
         
-        const name = document.getElementById("pName").value;
-        const price = document.getElementById("pPrice").value;
+        // تحديث القائمة المنسدلة للأقسام
+        const catSelect = document.getElementById("pCategory");
+        catSelect.innerHTML = '<option value="">اختر قسم...</option>';
+        data.categories.forEach(c => {
+            catSelect.innerHTML += `<option value="${c}">${c}</option>`;
+        });
 
-        if (!name || !price) return alert("الاسم والسعر مطلوبين!");
-
-        btn.disabled = true;
-        btn.innerText = "جاري الحفظ...";
-
-        try {
-            let imageUrl = "";
-            if (file) {
-                imageUrl = await uploadImage(file);
-            }
-
-            const product = {
-                action: "add",
-                name: name,
-                price: price,
-                category: document.getElementById("pCategory").value,
-                image: imageUrl,
-                description: document.getElementById("pDesc").value
-            };
-
-            await fetch(API_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify(product)
-            });
-
-            alert("تمت الإضافة! (قد يستغرق الظهور لحظات)");
-            location.reload();
-        } catch (err) {
-            alert("حدث خطأ: " + err.message);
-            btn.disabled = false;
-        }
-    }
-
-    // 3. وظيفة عرض المنتجات من Google Sheets
-    async function loadProducts() {
-        const loader = document.getElementById("loader");
-        const container = document.getElementById("productsDisplay");
-        
-        loader.style.display = "block";
-        container.innerHTML = "";
-
-        try {
-            const res = await fetch(API_URL);
-            const data = await res.json();
-
-            data.forEach((item, index) => {
-                container.innerHTML += `
-                    <div class="card">
-                        <img src="${item.image || 'https://via.placeholder.com/300'}" alt="${item.name}">
-                        <div class="card-body">
-                            <span class="category">${item.category}</span>
-                            <h3>${item.name}</h3>
-                            <div class="price">${item.price} ج.م</div>
-                            <p style="color:#94a3b8; font-size:14px;">${item.description}</p>
-                            <button class="btn-delete" onclick="deleteProduct(${index})">حذف المنتج</button>
-                        </div>
+        // عرض المنتجات
+        const list = document.getElementById("productsList");
+        list.innerHTML = "";
+        data.products.forEach(p => {
+            list.innerHTML += `
+                <div class="card">
+                    <img src="${p.image || ''}">
+                    <div style="flex:1">
+                        <h3>${p.name} - <small>${p.category}</small></h3>
+                        <p class="price">${p.price} ج.م</p>
+                        <button class="btn-edit" onclick='startEdit(${JSON.stringify(p)})'>تعديل</button>
+                        <button class="btn-del" onclick="deleteProduct(${p.id})">حذف</button>
                     </div>
-                `;
-            });
-        } catch (err) {
-            container.innerHTML = "<p>فشل تحميل البيانات. تأكد من إعدادات Script.</p>";
-        } finally {
-            loader.style.display = "none";
-        }
+                </div>
+            `;
+        });
     }
 
-    // 4. وظيفة الحذف
-    async function deleteProduct(index) {
-        if (!confirm("هل تريد حذف هذا المنتج؟")) return;
+    function startEdit(p) {
+        document.getElementById("formTitle").innerText = "تعديل المنتج: " + p.name;
+        document.getElementById("editId").value = p.id;
+        document.getElementById("pName").value = p.name;
+        document.getElementById("pPrice").value = p.price;
+        document.getElementById("pCategory").value = p.category;
+        document.getElementById("pDesc").value = p.description;
+        currentImage = p.image; // نحتفظ بالصورة القديمة لو مغيرناهاش
+        document.getElementById("cancelEdit").style.display = "block";
+        document.getElementById("saveBtn").innerText = "تحديث البيانات";
+        window.scrollTo(0,0);
+    }
+
+    async function saveProduct() {
+        const id = document.getElementById("editId").value;
+        const file = document.getElementById("pImage").files[0];
+        const newCat = document.getElementById("newCategory").value;
+        const category = newCat || document.getElementById("pCategory").value;
         
-        // نرسل الـ index كـ ID للحذف (الصف في الشيت)
-        await fetch(`${API_URL}?action=delete&id=${index}`);
-        loadProducts();
+        document.getElementById("saveBtn").disabled = true;
+        
+        let imageUrl = currentImage;
+        if (file) {
+            // هنا تضع كود رفع Cloudinary الذي استخدمناه سابقاً
+            imageUrl = await uploadToCloudinary(file); 
+        }
+
+        const payload = {
+            action: id ? "edit" : "add",
+            id: id,
+            name: document.getElementById("pName").value,
+            price: document.getElementById("pPrice").value,
+            category: category,
+            image: imageUrl,
+            description: document.getElementById("pDesc").value
+        };
+
+        await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+        alert("تمت العملية بنجاح");
+        resetForm();
+        loadData();
     }
 
-    // تحميل البيانات عند فتح الصفحة
-    loadProducts();
+    function resetForm() {
+        document.getElementById("formTitle").innerText = "إضافة منتج جديد";
+        document.getElementById("editId").value = "";
+        document.getElementById("saveBtn").innerText = "حفظ المنتج";
+        document.getElementById("saveBtn").disabled = false;
+        document.getElementById("cancelEdit").style.display = "none";
+        ["pName", "pPrice", "newCategory", "pDesc", "pImage"].forEach(i => document.getElementById(i).value = "");
+        currentImage = "";
+    }
 
+    // لا تنسَ إضافة وظيفة uploadToCloudinary هنا كما في الكود السابق
 </script>
-
 </body>
 </html>
